@@ -1,5 +1,5 @@
 {
-  "name": "Invoicely AI",
+  "name": "Faturamatik AI",
   "description": "An AI-powered Micro-SaaS for automated invoice extraction, validation, and analytics using Gemini 3 Flash.",
   "requestFramePermissions": []
 }
