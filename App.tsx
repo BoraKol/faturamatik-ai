@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { extractInvoiceData } from './services/geminiService';
 import { saveInvoice, getInvoices, updateInvoice, validateMath, exportToCSV } from './services/storageService';
 import { Invoice, InvoiceStatus, Currency } from './types';
@@ -7,7 +7,7 @@ import InvoiceTable from './components/InvoiceTable';
 import EditModal from './components/EditModal';
 import InvoiceDetailModal from './components/InvoiceDetailModal';
 import ApiKeyInput from './components/ApiKeyInput';
-import { UploadCloud, Loader2, Zap, CheckCircle2 } from 'lucide-react';
+import { UploadCloud, Loader2, Zap, CheckCircle2, Camera, FolderOpen } from 'lucide-react';
 
 const API_KEY_STORAGE = 'faturamatik_api_key';
 
@@ -19,6 +19,13 @@ function App() {
   const [viewingInvoice, setViewingInvoice] = useState<Invoice | null>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [apiKey, setApiKey] = useState<string | null>(null);
+
+  // Detect mobile device for camera button visibility
+  const isMobile = /iPhone|iPad|iPod|Android|webOS|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+
+  // Refs for file inputs
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const cameraInputRef = useRef<HTMLInputElement>(null);
 
   // Initial data load
   useEffect(() => {
@@ -146,6 +153,19 @@ function App() {
     event.target.value = '';
   };
 
+  // Button click handlers for camera and file picker
+  const handleCameraClick = () => {
+    if (!isProcessing && cameraInputRef.current) {
+      cameraInputRef.current.click();
+    }
+  };
+
+  const handleFileClick = () => {
+    if (!isProcessing && fileInputRef.current) {
+      fileInputRef.current.click();
+    }
+  };
+
   // Drag and Drop handlers
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();
@@ -253,22 +273,22 @@ function App() {
                   </div>
 
                   {/* Upload Area */}
-                  <label
-                    className={`
-                     flex-1 relative rounded-2xl cursor-pointer transition-all duration-300
-                     ${isProcessing
-                        ? 'pointer-events-none'
-                        : 'hover:scale-[1.02] active:scale-[0.98]'}
-                   `}
-                  >
+                  <div className="flex-1 relative rounded-2xl">
                     {/* Glassmorphism card */}
-                    <div className={`
-                     absolute inset-0 rounded-2xl backdrop-blur-xl bg-white/10 
-                     border border-white/20 shadow-2xl transition-all duration-300
-                     ${!isProcessing && 'group-hover:bg-white/15 group-hover:border-white/30'}
-                   `}></div>
+                    <div className="absolute inset-0 rounded-2xl backdrop-blur-xl bg-white/10 border border-white/20 shadow-2xl"></div>
 
+                    {/* Hidden inputs */}
                     <input
+                      ref={cameraInputRef}
+                      type="file"
+                      accept="image/*"
+                      capture="environment"
+                      className="hidden"
+                      onChange={handleFileUpload}
+                      disabled={isProcessing}
+                    />
+                    <input
+                      ref={fileInputRef}
                       type="file"
                       accept="image/*,application/pdf"
                       className="hidden"
@@ -296,15 +316,33 @@ function App() {
                         </div>
                       ) : (
                         <>
-                          {/* Upload Icon with glow */}
-                          <div className="relative mb-4">
-                            <div className="absolute inset-0 bg-white/20 rounded-full blur-xl scale-150"></div>
-                            <div className="relative w-16 h-16 bg-white/10 backdrop-blur rounded-full flex items-center justify-center border border-white/20">
-                              <UploadCloud className="w-8 h-8 text-white" />
-                            </div>
+                          {/* Two action buttons */}
+                          <div className="flex gap-4 mb-6">
+                            {/* Camera Button - Only visible on mobile */}
+                            {isMobile && (
+                              <button
+                                onClick={handleCameraClick}
+                                className="flex flex-col items-center gap-2 p-4 bg-white/10 hover:bg-white/20 rounded-xl border border-white/20 hover:border-white/40 transition-all duration-300 hover:scale-105 active:scale-95"
+                              >
+                                <div className="w-12 h-12 bg-gradient-to-br from-emerald-400 to-cyan-500 rounded-full flex items-center justify-center shadow-lg shadow-emerald-500/30">
+                                  <Camera className="w-6 h-6 text-white" />
+                                </div>
+                                <span className="text-white font-medium text-sm">Kamera</span>
+                              </button>
+                            )}
+
+                            {/* File Picker Button */}
+                            <button
+                              onClick={handleFileClick}
+                              className="flex flex-col items-center gap-2 p-4 bg-white/10 hover:bg-white/20 rounded-xl border border-white/20 hover:border-white/40 transition-all duration-300 hover:scale-105 active:scale-95"
+                            >
+                              <div className="w-12 h-12 bg-gradient-to-br from-violet-400 to-purple-500 rounded-full flex items-center justify-center shadow-lg shadow-violet-500/30">
+                                <FolderOpen className="w-6 h-6 text-white" />
+                              </div>
+                              <span className="text-white font-medium text-sm">Dosya Seç</span>
+                            </button>
                           </div>
 
-                          <span className="font-semibold text-white text-base mb-1">Dosya Yükle</span>
                           <span className="text-white/60 text-xs mb-4">veya sürükle bırak</span>
 
                           {/* File type badges */}
@@ -316,7 +354,7 @@ function App() {
                         </>
                       )}
                     </div>
-                  </label>
+                  </div>
 
                   {/* Bottom stats */}
                   <div className="mt-4 flex items-center justify-between text-xs text-white/50">
