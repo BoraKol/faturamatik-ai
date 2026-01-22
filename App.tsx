@@ -9,6 +9,8 @@ import InvoiceDetailModal from './components/InvoiceDetailModal';
 import ApiKeyInput from './components/ApiKeyInput';
 import { UploadCloud, Loader2, Zap, CheckCircle2, Camera, FolderOpen } from 'lucide-react';
 
+import { Analytics } from "@vercel/analytics/react"
+
 const API_KEY_STORAGE = 'faturamatik_api_key';
 
 function App() {
@@ -401,6 +403,9 @@ function App() {
         invoice={viewingInvoice}
         onClose={() => setViewingInvoice(null)}
       />
+
+      {/* Vercel Analytics */}
+      <Analytics />
     </div>
   );
 }
