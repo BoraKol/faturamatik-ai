@@ -321,6 +321,7 @@ function App() {
                             {/* Camera Button - Only visible on mobile */}
                             {isMobile && (
                               <button
+                                type="button"
                                 onClick={handleCameraClick}
                                 className="flex flex-col items-center gap-2 p-4 bg-white/10 hover:bg-white/20 rounded-xl border border-white/20 hover:border-white/40 transition-all duration-300 hover:scale-105 active:scale-95"
                               >
@@ -333,6 +334,7 @@ function App() {
 
                             {/* File Picker Button */}
                             <button
+                              type="button"
                               onClick={handleFileClick}
                               className="flex flex-col items-center gap-2 p-4 bg-white/10 hover:bg-white/20 rounded-xl border border-white/20 hover:border-white/40 transition-all duration-300 hover:scale-105 active:scale-95"
                             >
