@@ -277,8 +277,9 @@ function App() {
                     {/* Glassmorphism card */}
                     <div className="absolute inset-0 rounded-2xl backdrop-blur-xl bg-white/10 border border-white/20 shadow-2xl"></div>
 
-                    {/* Hidden inputs */}
+                    {/* Hidden inputs with IDs for label targeting */}
                     <input
+                      id="camera-input"
                       ref={cameraInputRef}
                       type="file"
                       accept="image/*"
@@ -288,6 +289,7 @@ function App() {
                       disabled={isProcessing}
                     />
                     <input
+                      id="file-input"
                       ref={fileInputRef}
                       type="file"
                       accept="image/*,application/pdf"
@@ -316,33 +318,31 @@ function App() {
                         </div>
                       ) : (
                         <>
-                          {/* Two action buttons */}
+                          {/* Two action labels (native mobile support) */}
                           <div className="flex gap-4 mb-6">
-                            {/* Camera Button - Only visible on mobile */}
+                            {/* Camera Label - Only visible on mobile */}
                             {isMobile && (
-                              <button
-                                type="button"
-                                onClick={handleCameraClick}
-                                className="flex flex-col items-center gap-2 p-4 bg-white/10 hover:bg-white/20 rounded-xl border border-white/20 hover:border-white/40 transition-all duration-300 hover:scale-105 active:scale-95"
+                              <label
+                                htmlFor="camera-input"
+                                className="flex flex-col items-center gap-2 p-4 bg-white/10 hover:bg-white/20 rounded-xl border border-white/20 hover:border-white/40 transition-all duration-300 hover:scale-105 active:scale-95 cursor-pointer"
                               >
                                 <div className="w-12 h-12 bg-gradient-to-br from-emerald-400 to-cyan-500 rounded-full flex items-center justify-center shadow-lg shadow-emerald-500/30">
                                   <Camera className="w-6 h-6 text-white" />
                                 </div>
                                 <span className="text-white font-medium text-sm">Kamera</span>
-                              </button>
+                              </label>
                             )}
 
-                            {/* File Picker Button */}
-                            <button
-                              type="button"
-                              onClick={handleFileClick}
-                              className="flex flex-col items-center gap-2 p-4 bg-white/10 hover:bg-white/20 rounded-xl border border-white/20 hover:border-white/40 transition-all duration-300 hover:scale-105 active:scale-95"
+                            {/* File Picker Label */}
+                            <label
+                              htmlFor="file-input"
+                              className="flex flex-col items-center gap-2 p-4 bg-white/10 hover:bg-white/20 rounded-xl border border-white/20 hover:border-white/40 transition-all duration-300 hover:scale-105 active:scale-95 cursor-pointer"
                             >
                               <div className="w-12 h-12 bg-gradient-to-br from-violet-400 to-purple-500 rounded-full flex items-center justify-center shadow-lg shadow-violet-500/30">
                                 <FolderOpen className="w-6 h-6 text-white" />
                               </div>
                               <span className="text-white font-medium text-sm">Dosya Seç</span>
-                            </button>
+                            </label>
                           </div>
 
                           <span className="text-white/60 text-xs mb-4">veya sürükle bırak</span>
